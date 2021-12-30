@@ -1,0 +1,19 @@
+#pragma once
+#include <iostream>
+#include "Interface.h"
+
+namespace MyInterface
+{
+	class DLLB : public IBase
+	{
+	public:
+		/*
+		 * √Ë ˆ
+		 */
+		virtual void discript()const
+		{
+			std::cout << "Call Test B !!!" << std::endl;
+		}
+	};
+}
+
