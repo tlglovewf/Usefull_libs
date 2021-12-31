@@ -9,3 +9,5 @@
 #else
 #    define DLL_API
 #endif
+
+#define PROCMARK extern "C" _declspec(dllexport)

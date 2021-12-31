@@ -129,8 +129,8 @@ namespace MyInterface {
         {
             if (fileExists(localLibraryName))
             {
-                OSG_WARN << "Warning: dynamic library '" << libraryName << "' exists, but an error occurred while trying to open it:" << std::endl;
-                OSG_WARN << dlerror() << std::endl;
+                std::cout << "Warning: dynamic library '" << libraryName << "' exists, but an error occurred while trying to open it:" << std::endl;
+                std::cout << dlerror() << std::endl;
             }
             else
             {
@@ -169,15 +169,15 @@ namespace MyInterface {
         }
         else
         {
-            OSG_WARN << "DynamicLibrary::failed looking up " << procName << std::endl;
-            OSG_WARN << "DynamicLibrary::error " << strerror(errno) << std::endl;
+            std::cout << "DynamicLibrary::failed looking up " << procName << std::endl;
+            std::cout << "DynamicLibrary::error " << strerror(errno) << std::endl;
             return NULL;
         }
 #else // other unix
         void* sym = dlsym(_handle, procName.c_str());
         if (!sym) {
-            OSG_WARN << "DynamicLibrary::failed looking up " << procName << std::endl;
-            OSG_WARN << "DynamicLibrary::error " << dlerror() << std::endl;
+            std::cout << "DynamicLibrary::failed looking up " << procName << std::endl;
+            std::cout << "DynamicLibrary::error " << dlerror() << std::endl;
         }
         return sym;
 #endif

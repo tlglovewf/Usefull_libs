@@ -1,18 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
- *
- * This library is open source and may be redistributed and/or modified under
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
- * (at your option) any later version.  The full license is in LICENSE file
- * included with this distribution, and on the openscenegraph.org website.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * OpenSceneGraph Public License for more details.
-*/
-
-#ifndef OSGDB_DYNAMICLIBRARY
-#define OSGDB_DYNAMICLIBRARY 1
+#pragma once
 #include "common_global.h"
 #include "windows.h"
 
@@ -21,15 +7,15 @@
 
 namespace MyInterface {
 
-/** DynamicLibrary - encapsulates the loading and unloading of dynamic libraries,
-    typically used for loading ReaderWriter plug-ins.
-*/
-class DLL_API DynamicLibrary
-{
+    /** DynamicLibrary - encapsulates the loading and unloading of dynamic libraries,
+        typically used for loading ReaderWriter plug-ins.
+    */
+    class DLL_API DynamicLibrary
+    {
     public:
 
-        typedef void*   HANDLE;
-        typedef void*   PROC_ADDRESS;
+        typedef void* HANDLE;
+        typedef void* PROC_ADDRESS;
 
         /** returns a pointer to a DynamicLibrary object on successfully
           * opening of library returns NULL on failure.
@@ -37,21 +23,22 @@ class DLL_API DynamicLibrary
         static DynamicLibrary* loadLibrary(const std::string& libraryName);
 
         /** return name of library stripped of path.*/
-        const std::string& getName() const     { return _name; }
+        const std::string& getName() const { return _name; }
 
         /** return name of library including full path to it.*/
         const std::string& getFullName() const { return _fullName; }
 
         /** return handle to .dso/.dll dynamic library itself.*/
-        HANDLE             getHandle() const   { return _handle; }
+        HANDLE             getHandle() const { return _handle; }
 
         /** return address of function located in library.*/
         PROC_ADDRESS       getProcAddress(const std::string& procName);
 
+        ~DynamicLibrary();
     protected:
 
         /** get handle to library file */
-        static HANDLE getLibraryHandle( const std::string& libraryName);
+        static HANDLE getLibraryHandle(const std::string& libraryName);
 
         /** disallow copy constructor.*/
         DynamicLibrary(const DynamicLibrary&) = delete;
@@ -62,15 +49,13 @@ class DLL_API DynamicLibrary
           * through loadLibrary() above which returns NULL on
           * failure, a valid DynamicLibrary object on success.
           */
-        DynamicLibrary(const std::string& name,HANDLE handle);
-        ~DynamicLibrary();
+        DynamicLibrary(const std::string& name, HANDLE handle);
+        
 
         HANDLE          _handle;
         std::string     _name;
         std::string     _fullName;
 
-};
+    };
 
 }
-
-#endif // __DYNAMIC_LIBRARY_H

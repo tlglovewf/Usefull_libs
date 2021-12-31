@@ -16,4 +16,4 @@ namespace MyInterface
 		}
 	};
 }
-
+PROCMARK  MyInterface::IBase* GetBaseInterface(); //定义导出函数

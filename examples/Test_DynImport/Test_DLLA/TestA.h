@@ -15,5 +15,8 @@ namespace MyInterface
 			std::cout << "Call Test A !!!" << std::endl;
 		}
 	};
+
+
 }
+PROCMARK  MyInterface::IBase * GetBaseInterface(); //定义导出函数
 
