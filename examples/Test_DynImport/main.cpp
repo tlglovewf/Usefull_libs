@@ -1,15 +1,15 @@
 #include <iostream>
-#include "DynamicLibrary.h"
-#include "DynLoader.h"
-#include "Interface.h"
+#include "base\T_DynamicLibrary.h"
+#include "base\T_DynLoader.h"
+#include "test_Interface.h"
 
 
 typedef MyInterface::IBase*  (*GetBase)();
 
 int main(int argc, char** argv)
 {
-	auto apointer = MyInterface::DynLoader::getSingleton().load("Test_DLLA");
-	auto bpointer = MyInterface::DynLoader::getSingleton().load("Test_DLLB");
+	auto apointer = CommUtils::DynLoader::getSingleton().load("Test_DLLA");
+	auto bpointer = CommUtils::DynLoader::getSingleton().load("Test_DLLB");
 
 	auto ibase = GET_BASE(DLLA);
 	if (ibase)

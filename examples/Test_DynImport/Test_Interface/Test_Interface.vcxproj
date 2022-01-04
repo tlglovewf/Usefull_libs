@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;BUILD_DYNAMIC;Export_Library;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Test_DynImport\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Test_DynImport\include;$(SolutionDir)..\libcommutils\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,14 +141,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\common_global.h" />
-    <ClInclude Include="..\include\DynamicLibrary.h" />
-    <ClInclude Include="..\include\DynLoader.h" />
-    <ClInclude Include="..\include\Interface.h" />
+    <ClInclude Include="..\include\test_Interface.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DynamicLibrary.cpp" />
-    <ClCompile Include="DynLoader.cpp" />
-    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="test_Interface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

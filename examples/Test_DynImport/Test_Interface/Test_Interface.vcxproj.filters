@@ -15,27 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\Interface.h">
+    <ClInclude Include="..\include\test_Interface.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\include\common_global.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\DynLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\DynamicLibrary.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Interface.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DynLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicLibrary.cpp">
+    <ClCompile Include="test_Interface.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

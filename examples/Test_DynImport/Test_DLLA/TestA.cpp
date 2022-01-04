@@ -2,8 +2,6 @@
 
 namespace MyInterface
 {
-
-
 	REGIST_BASE(DLLA)
 }	
 /// <summary>

@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "Interface.h"
+#include "test_Interface.h"
 
 namespace MyInterface
 {
