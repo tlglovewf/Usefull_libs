@@ -28,6 +28,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Json", "Test_Json\Test
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommUtils", "CommUtils\CommUtils.vcxproj", "{E95314C5-693A-4EAC-9CD2-17DB9653D53C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Mimalloc", "Test_Mimalloc\Test_Mimalloc.vcxproj", "{19FA8A08-45A9-487B-A1A0-954F4676C558}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -116,6 +118,14 @@ Global
 		{E95314C5-693A-4EAC-9CD2-17DB9653D53C}.Release|x64.Build.0 = Release|x64
 		{E95314C5-693A-4EAC-9CD2-17DB9653D53C}.Release|x86.ActiveCfg = Release|Win32
 		{E95314C5-693A-4EAC-9CD2-17DB9653D53C}.Release|x86.Build.0 = Release|Win32
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Debug|x64.ActiveCfg = Debug|x64
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Debug|x64.Build.0 = Debug|x64
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Debug|x86.ActiveCfg = Debug|Win32
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Debug|x86.Build.0 = Debug|Win32
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x64.ActiveCfg = Release|x64
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x64.Build.0 = Release|x64
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x86.ActiveCfg = Release|Win32
+		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

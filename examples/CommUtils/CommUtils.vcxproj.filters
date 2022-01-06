@@ -45,6 +45,9 @@
     <ClInclude Include="..\..\libcommutils\include\json\T_Yyjson.h">
       <Filter>头文件\json</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_TimeInteral.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libcommutils\sources\base\T_Interface.cpp">

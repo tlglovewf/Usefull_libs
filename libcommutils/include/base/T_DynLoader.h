@@ -10,7 +10,7 @@ namespace CommUtils
 	/// <summary>
 	/// ∂ØÃ¨ø‚º”‘ÿ¿‡
 	/// </summary>
-	 class DLL_API DynLoader final : public ISingleton<DynLoader>
+	 class COMM_API DynLoader final : public ISingleton<DynLoader>
 	{
 	public:
 		/// <summary>

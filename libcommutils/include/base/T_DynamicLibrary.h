@@ -11,7 +11,7 @@ namespace CommUtils {
     /** DynamicLibrary - encapsulates the loading and unloading of dynamic libraries,
         typically used for loading ReaderWriter plug-ins.
     */
-    class DLL_API DynamicLibrary
+    class COMM_API DynamicLibrary
     {
     public:
 

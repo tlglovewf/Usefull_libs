@@ -131,7 +131,7 @@ namespace CommUtils
 						static	N& getSingleton();
 
 #define R_REGISTER(N)   \
-	class DLL_API R_##N : public CommUtils::Register<N>	\
+	class COMM_API R_##N : public CommUtils::Register<N>	\
 	{											\
 		DEFSINGLE(R_##N)						\
 	};

@@ -2,12 +2,12 @@
 
 #ifdef BUILD_DYNAMIC
 #    if defined(Export_Library)
-#        define DLL_API __declspec(dllexport)
+#        define COMM_API __declspec(dllexport)
 #    else
-#        define DLL_API __declspec(dllimport)
+#        define COMM_API __declspec(dllimport)
 #    endif
 #else
-#    define DLL_API
+#    define COMM_API
 #endif
 
 #define PROCMARK extern "C" _declspec(dllexport)
