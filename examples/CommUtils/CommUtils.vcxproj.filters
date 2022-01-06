@@ -19,12 +19,6 @@
     <Filter Include="源文件\base">
       <UniqueIdentifier>{50d7c13f-60fe-4678-b728-bf578ce44f11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\json">
-      <UniqueIdentifier>{3f338d8f-38ec-4ef6-a8ae-32746ec8d1f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\json">
-      <UniqueIdentifier>{0acf73d7-5a35-4617-b5cc-910bd3ed87b9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libcommutils\include\base\T_Interface.h">
@@ -39,13 +33,10 @@
     <ClInclude Include="..\..\libcommutils\include\comm_global.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libcommutils\include\json\T_JsonInterface.h">
-      <Filter>头文件\json</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libcommutils\include\json\T_Yyjson.h">
-      <Filter>头文件\json</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\libcommutils\include\base\T_TimeInteral.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_JsonInterface.h">
       <Filter>头文件\base</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,11 +50,8 @@
     <ClCompile Include="..\..\libcommutils\sources\base\T_DynamicLibrary.cpp">
       <Filter>源文件\base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libcommutils\sources\json\T_JsonInterface.cpp">
-      <Filter>源文件\json</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libcommutils\sources\json\T_Yyjson.cpp">
-      <Filter>源文件\json</Filter>
+    <ClCompile Include="..\..\libcommutils\sources\base\T_JsonInterface.cpp">
+      <Filter>源文件\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

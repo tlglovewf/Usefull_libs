@@ -16,7 +16,7 @@ namespace CommUtils
 	public:
 		ISingleton() = default;
 		virtual ~ISingleton() = default;
-
+		ISingleton(const ISingleton&) = delete;
 		static T& getSingleton()
 		{
 			static T instance;
@@ -140,7 +140,7 @@ namespace CommUtils
 #define REGIST_INSTANCE(CLS,C) \
 			 PLUGININSTANCE(CLS,C) s_##CLS(#CLS);
 #define UNREGIST_INSTANCE(CLS,R) \
-			MyInterface::R::getSingleton().unregist(#CLS);
+			R::getSingleton().unregist(#CLS);
 #define GET_INSTANCE(CLS,R)		\
-			MyInterface::R::getSingleton().getObject(#CLS);
+			R::getSingleton().getObject(#CLS);
 }

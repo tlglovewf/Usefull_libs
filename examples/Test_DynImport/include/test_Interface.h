@@ -39,8 +39,8 @@ namespace MyInterface
 	//class IBase  ×¢²áÀà
 R_REGISTER(IBase)
 #define REGIST_BASE(CLS)	REGIST_INSTANCE(CLS,	IBase)
-#define UNREGIST_BASE(CLS)	UNREGIST_INSTANCE(CLS,	R_IBase)
-#define GET_BASE(CLS)		GET_INSTANCE(CLS,		R_IBase)
+#define UNREGIST_BASE(CLS)	UNREGIST_INSTANCE(CLS,	MyInterface::R_IBase)
+#define GET_BASE(CLS)		GET_INSTANCE(CLS,		MyInterface::R_IBase)
 
 #pragma endregion 
 }

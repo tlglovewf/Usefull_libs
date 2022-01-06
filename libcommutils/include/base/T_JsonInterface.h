@@ -29,7 +29,7 @@ namespace CommUtils
 //class IBase  ×¢²áÀà
 R_REGISTER(IJsonBase)
 #define REGIST_JSON(CLS)	REGIST_INSTANCE(CLS,	IJsonBase)
-#define UNREGIST_JSON(CLS)	UNREGIST_INSTANCE(CLS,	R_IJsonBase)
-#define GET_JSON(CLS)		GET_INSTANCE(CLS,		R_IJsonBase)
+#define UNREGIST_JSON(CLS)	UNREGIST_INSTANCE(CLS,	CommUtils::R_IJsonBase)
+#define GET_JSON(CLS)		GET_INSTANCE(CLS,		CommUtils::R_IJsonBase)
 }
 

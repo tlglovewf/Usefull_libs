@@ -30,6 +30,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommUtils", "CommUtils\Comm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Mimalloc", "Test_Mimalloc\Test_Mimalloc.vcxproj", "{19FA8A08-45A9-487B-A1A0-954F4676C558}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{3564FF21-2A01-472F-9126-CD9B154CE97D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin_Yyjson", "Plugins\Plugin_Yyjson\Plugin_Yyjson.vcxproj", "{2B8E4088-AFAA-4A28-92E0-3FED0543356A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -126,6 +130,14 @@ Global
 		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x64.Build.0 = Release|x64
 		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x86.ActiveCfg = Release|Win32
 		{19FA8A08-45A9-487B-A1A0-954F4676C558}.Release|x86.Build.0 = Release|Win32
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Debug|x64.ActiveCfg = Debug|x64
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Debug|x64.Build.0 = Debug|x64
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Debug|x86.ActiveCfg = Debug|Win32
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Debug|x86.Build.0 = Debug|Win32
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Release|x64.ActiveCfg = Release|x64
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Release|x64.Build.0 = Release|x64
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Release|x86.ActiveCfg = Release|Win32
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +147,7 @@ Global
 		{8BB17B7A-FB94-4881-BA54-8B6AF22BBCF1} = {B43BDB87-C71A-4954-BD67-4F8D46C6886F}
 		{19A20CA2-DF7D-47BE-8444-BED6FF644D6C} = {B43BDB87-C71A-4954-BD67-4F8D46C6886F}
 		{F90DA713-AA58-420B-BCC0-FF3E2EFF9799} = {B43BDB87-C71A-4954-BD67-4F8D46C6886F}
+		{2B8E4088-AFAA-4A28-92E0-3FED0543356A} = {3564FF21-2A01-472F-9126-CD9B154CE97D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72C35D38-A460-4F38-889B-0652DFA0B0C7}

@@ -43,7 +43,46 @@ namespace CommUtils
 		/// <param name="name"></param>
 		/// <returns></returns>
 		DynamicLibPtr findDynamicLibPtr(const std::string& name);
+
+		/// <summary>
+		/// 设置插件地址
+		/// </summary>
+		/// <param name="path">路径</param>
+		void setPluginPath(const std::string& path)
+		{
+			m_pluginpath = path;
+		}
+
+		/// <summary>
+		/// 设置插件前缀
+		/// </summary>
+		/// <param name="prefix">前缀</param>
+		void setPluginPrefix(const std::string& prefix)
+		{
+			m_pluginprefix = prefix;
+		}
+
+		/// <summary>
+		/// 加载对象插件库
+		/// </summary>
+		/// <typeparam name="T">对象名</typeparam>
+		/// <returns>是否加载成功</returns>
+		bool loadTypePlugin(const std::string &name)
+		{
+			
+#ifdef _WIN32
+				std::string pluginabspath = m_pluginpath + m_pluginprefix + name + ".dll";
+#else
+				//add more platform
+#endif
+				auto ptr = DynLoader::getSingleton().load(pluginabspath);
+				return ptr != nullptr;
+			
+		}
 	protected:
-		std::map<std::string, DynamicLibPtr >  m_dyns;
+		std::map<std::string, DynamicLibPtr >	m_dyns;
+		std::string								m_pluginprefix	= "Plugin_";
+		std::string								m_pluginpath	= "";
 	};
 }
+#define LOADPLLUGIN(TYPE) CommUtils::DynLoader::getSingleton().loadTypePlugin(#TYPE)
