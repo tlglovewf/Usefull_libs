@@ -39,6 +39,18 @@
     <ClInclude Include="..\..\libcommutils\include\base\T_JsonInterface.h">
       <Filter>头文件\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_NoCopyable.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_FileSystem.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_Random.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libcommutils\include\base\T_Timer.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libcommutils\sources\base\T_Interface.cpp">

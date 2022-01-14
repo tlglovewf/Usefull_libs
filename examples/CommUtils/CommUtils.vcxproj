@@ -21,9 +21,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\libcommutils\include\base\T_DynamicLibrary.h" />
     <ClInclude Include="..\..\libcommutils\include\base\T_DynLoader.h" />
+    <ClInclude Include="..\..\libcommutils\include\base\T_FileSystem.h" />
     <ClInclude Include="..\..\libcommutils\include\base\T_Interface.h" />
     <ClInclude Include="..\..\libcommutils\include\base\T_JsonInterface.h" />
+    <ClInclude Include="..\..\libcommutils\include\base\T_NoCopyable.h" />
+    <ClInclude Include="..\..\libcommutils\include\base\T_Random.h" />
     <ClInclude Include="..\..\libcommutils\include\base\T_TimeInteral.h" />
+    <ClInclude Include="..\..\libcommutils\include\base\T_Timer.h" />
     <ClInclude Include="..\..\libcommutils\include\comm_global.h" />
   </ItemGroup>
   <ItemGroup>
