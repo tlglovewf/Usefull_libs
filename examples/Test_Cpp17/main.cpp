@@ -266,6 +266,9 @@ int main(int argc, char** argv)
 	//	std::cout << "successfully." << std::endl;
 	//}
 	
+	int value = 1'000'000;
+
+	std::cout << value << std::endl;
 
 	return 0;
 }

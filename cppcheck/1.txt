@@ -1,0 +1,10 @@
+cppcheck: error: unrecognized command line option: "--xml-version".
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="2">
+    <cppcheck version="2.6"/>
+    <errors>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;a[10]&apos; accessed at index 11, which is out of bounds." verbose="Array &apos;a[10]&apos; accessed at index 11, which is out of bounds." cwe="788" file0="F:/Github/cppcheck-2.6/Test_Check/main.cpp">
+            <location file="F:\Github\cppcheck-2.6\Test_Check\main.cpp" line="6" column="16" info="Array index out of bounds"/>
+        </error>
+    </errors>
+</results>

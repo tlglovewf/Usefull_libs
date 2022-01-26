@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="std::map&lt;*&gt;">
+    <DisplayString>{{length = {_Mypair._Myval2._Myval2._Mysize}}}</DisplayString><!--显示内容  Name中名称可以随意取 但是值必须要是类中成员值-->
+    <Expand>
+      <Item Name="[comp]">_Mypair</Item>
+      <Item Name="[first element]">_Mypair._Myval2._Myval2._Myhead</Item>
+      <TreeItems>
+        <Size>_Mypair._Myval2._Myval2._Mysize</Size>
+        <HeadPointer>_Mypair._Myval2._Myval2._Myhead-&gt;_Parent</HeadPointer>
+        <LeftPointer>_Left</LeftPointer>
+        <RightPointer>_Right</RightPointer>
+        <ValueNode Condition="!((bool)_Isnil)">_Myval</ValueNode>
+      </TreeItems>
+    </Expand>
+  </Type>
+
+  <Type Name="Test::Hello">
+    <DisplayString>{{ x = {_a} }}</DisplayString>  <!--{{ 前后不要有空格-->
+    <Expand>
+      <Item Name="[value]" ExcludeView="simple">_a</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
