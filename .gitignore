@@ -2,3 +2,5 @@ x64
 sources
 vsproject
 .vs
+libgflags
+liblog
