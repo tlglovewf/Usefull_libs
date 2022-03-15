@@ -5,6 +5,7 @@
 #include <variant>
 #include <optional>
 #include <string>
+#include <memory>
 #include <any>
 #include <filesystem>
 
@@ -238,6 +239,32 @@ enum Te
 
 #include "T_Timer.h"
 
+
+
+//void* operator new[](size_t size)
+//{
+//	cout << "new []" << endl;
+//	return nullptr;
+//}
+void operator delete[](void *d)
+{
+	cout << "delete []" << endl;
+}
+
+void operator delete(void* d)
+{
+	cout << "delete" << endl;
+}
+
+template<typename ... Args>
+std::string format(const std::string& pattern, Args ...args)
+{
+	size_t size = 1 + snprintf(nullptr, 0, pattern.c_str(), args ...);
+	std::unique_ptr<char[]> buffer(new char[size]) ;
+	snprintf(buffer.get(), size, pattern.c_str(), args ...);
+	return std::string(buffer.get());
+}
+
 int main(int argc, char** argv)
 {
 	//test_strcutbind();
@@ -266,9 +293,12 @@ int main(int argc, char** argv)
 	//	std::cout << "successfully." << std::endl;
 	//}
 	
-	int value = 1'000'000;
+	//int value = 1'000'000;
+	//
+	//std::cout << value << std::endl;
 
-	std::cout << value << std::endl;
+	auto str = format("%s%d", "ÄãºÃ", 100);
 
+	std::cout << str.c_str() << std::endl;
 	return 0;
 }

@@ -2,6 +2,10 @@
 #include <simdjson.h>
 #include "yyjson.h"
 #include <fstream>
+
+#include <base/T_Interface.h>
+#include <base/T_DynLoader.h>
+#include <base/T_JsonInterface.h>
 using namespace std;
 
 
@@ -33,7 +37,7 @@ int main(int argc, char** argv)
 	//simdjson::dom::parser parser;
 	//
 	//simdjson::dom::element result = parser.load(jsonpath);
-																													  n 
+																													  
 	//simdjson::ondemand::parser onparser;
 	//simdjson::padded_string json = simdjson::padded_string::load(jsonpath);
 	//simdjson::ondemand::document jsons = onparser.iterate(json);
@@ -43,6 +47,16 @@ int main(int argc, char** argv)
 	//std::cout << jsons["rinexcfg"]["observationsuffix"] << std::endl;
 	//std::cout << typeid(jsons["rinexcfg"]["observationsuffix"]).name() << endl;
 	
+
+
+	if(LOADPLLUGIN(Yyjson))
+	{
+
+	//  auto item = GET_JSON(Yyjson);
+	//  std::cout << "get " << item << std::endl;
+	//  item->loadFile("test");
+	}
+
 	getchar();
 	return 0;
 }

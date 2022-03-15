@@ -12,11 +12,11 @@ int main(int argc, char** argv)
 {
 
     //内角点列行数量
-	constexpr int image_count = 10;	//20
+	constexpr int image_count = /*10;	//*/20;
 	const  cv::Size square_size(30,30); //单位mm 单元格实际尺寸
-	const  cv::Size board_size( 6, 8);
+	//const  cv::Size board_size( 6, 8);
 
-	//const cv::Size board_size(13, 12);
+	const cv::Size board_size(13, 12);
 
 	using KeyPts = std::vector<cv::KeyPoint>;
 	using PtVec  = std::vector<cv::Point2f>;
@@ -29,21 +29,31 @@ int main(int argc, char** argv)
 		cv::Size image_size;
 		for (int i = 0; i <= image_count; ++i)
 		{
-#if 0
+#if 1
 			const std::string prfix = "E:/CamCalibra/Image";
 			const std::string sufix = ".tif";
+			if (i == 0)
+				continue;
 #else
 			const std::string prfix = "E:/CamCalibra/data/Source/ResPic";
 			const std::string sufix = ".jpg";
 #endif 
 			
 			auto abspath = prfix + std::to_string(i) + sufix;
-			cv::Mat imginput = cv::imread(abspath);
-			
+			cv::Mat imginput;
+
+			imginput = cv::imread(abspath);
 
 			image_size.width = imginput.cols;
 			image_size.height = imginput.rows;
-			bool bok = cv::findChessboardCorners(imginput, board_size, image_points , cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE);
+
+			cv::Mat view_gray;
+			if (imginput.channels() > 1)
+				cv::cvtColor(imginput, view_gray, cv::COLOR_RGB2GRAY);
+			else
+				view_gray = imginput;
+
+			bool bok = cv::findChessboardCorners(view_gray, board_size, image_points , cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_NORMALIZE_IMAGE);
 
 			if (!bok)
 			{
@@ -51,13 +61,7 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				cv::Mat view_gray;
-				if (imginput.channels() > 1)
-					cv::cvtColor(imginput, view_gray, cv::COLOR_RGB2GRAY);
-				else
-					view_gray = imginput;
-
-				cv::cornerSubPix(view_gray, image_points, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(cv::TermCriteria::EPS, 20, 0.01));
+				cv::cornerSubPix(view_gray, image_points, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS, 30, 0.01));
 
 				image_points_seq.push_back(image_points);
 

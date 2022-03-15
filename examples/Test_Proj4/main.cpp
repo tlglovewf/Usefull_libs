@@ -65,7 +65,7 @@ static Point3d BLH_to_GaussPrj(const BLHCoordinate& BLH, Datum datum = WGS84Datu
 	T = tan(b) * tan(b);
 	C = ee * cos(b) * cos(b);
 	A = (l - longitude0) * cos(b);
-
+																		    
 	M = a * ((1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256) * b - (3 * e2 / 8 + 3 * e2 * e2 / 32 + 45 * e2 * e2 * e2 / 1024) * sin(2 * b) + (15 * e2 * e2 / 256 + 45 * e2 * e2 * e2 / 1024) * sin(4 * b) - (35 * e2 * e2 * e2 / 3072) * sin(6 * b));
 	xval = NN * (A + (1 - T + C) * A * A * A / 6 + (5 - 18 * T + T * T + 72 * C - 58 * ee) * A * A * A * A * A / 120);
 	yval = M + NN * tan(b) * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A / 24 + (61 - 58 * T + T * T + 600 * C - 330 * ee) * A * A * A * A * A * A / 720);
