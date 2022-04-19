@@ -29,6 +29,7 @@
     <ClInclude Include="..\..\libcommutils\include\base\T_TimeInteral.h" />
     <ClInclude Include="..\..\libcommutils\include\base\T_Timer.h" />
     <ClInclude Include="..\..\libcommutils\include\comm_global.h" />
+    <ClInclude Include="T_Functions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libcommutils\sources\base\T_DynamicLibrary.cpp" />

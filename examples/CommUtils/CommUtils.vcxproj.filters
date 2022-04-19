@@ -51,6 +51,9 @@
     <ClInclude Include="..\..\libcommutils\include\base\T_Timer.h">
       <Filter>头文件\base</Filter>
     </ClInclude>
+    <ClInclude Include="T_Functions.h">
+      <Filter>头文件\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libcommutils\sources\base\T_Interface.cpp">
