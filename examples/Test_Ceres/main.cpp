@@ -6,6 +6,7 @@ struct CostFunctor
 {
 	template<typename T>
 	bool operator()(const T* const x,const T* const y, T* residual)const {
+		//观测值 - 估算值(误差项)
 		residual[0] = 10.5 - x[0] - y[0];
 		return true;
 	}

@@ -75,9 +75,59 @@ static Point3d BLH_to_GaussPrj(const BLHCoordinate& BLH, Datum datum = WGS84Datu
 	cout << yval << " " << xval << " " << BLH.alt << endl;
 	return { yval, xval, BLH.alt };
 }
+class GuassMath final
+{
+public:
+	//计算中央精度线
+	static int CalcCentralMeridian(double lon)
+	{
+		constexpr int dot = 6;
+		int d = lon / dot;
+		return (d + 1) * dot - 3;
+	}
+	//计算中央精度线
+	static int CalcCentralMeridian(int bandno, int band)
+	{
+		if (band == 3)
+		{
+			return 3 * bandno;
+		}
+		else if (band == 6)
+		{
+			return 6 * bandno - 3;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	//计算中央精度线
+	static int CalcDegreeBandNo(double lon, int band)
+	{
+		if (band == 3)
+		{
+			return (lon + 1.5) / 3;
+		}
+		else if (band == 6)
+		{
+			return (lon + 6) / 6;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+
+	 
+protected:
+	GuassMath() = default;
+};
+
 
 int main(int argc, char** argv)
 {
+
+ 
 	DEG_TO_RAD;
 
 	projPJ  wgsprj = pj_init_plus("+proj=longlat +datum=WGS84 +no_defs");

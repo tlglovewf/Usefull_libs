@@ -273,8 +273,6 @@ T SwitchByteStorage(T t)
 #include <QTime>
 void Tool_BinMerge::getLvxData()
 {
-
-
     QString file = QFileDialog::getOpenFileName(nullptr, "", QString(), "Date(*.dat)");
     
     if (!file.isEmpty() && std::filesystem::exists(file.toStdString()))
@@ -282,10 +280,8 @@ void Tool_BinMerge::getLvxData()
        
         std::ifstream  datfile(file.toStdString(),std::ios::binary);
         constexpr size_t  datasize = sizeof(GSOF_31H);
-        constexpr size_t  rmssize  = sizeof(GSOF_32H);
         constexpr size_t  recordsize = sizeof(RecordData);
         static_assert(datasize == 106/*单条总长度*/, "the full data len is error");
-        static_assert(rmssize  == 46               , "the rms data len is error");
         constexpr char headmark = 0x02;
        
 		std::string content;
@@ -293,7 +289,7 @@ void Tool_BinMerge::getLvxData()
 
         size_t index = 0;
         do 
-        {
+        {  //去噪
             while (content[index] != headmark)
                 ++index;
 
