@@ -180,128 +180,16 @@ void Tool_BinMerge::chooseTransFile()
     }
 }
 
-#pragma pack(1)
-struct GSOF_31H//full nav info
-
-{
-    char            recordtype;
-    char            recordlength;
-    short           gpsweek;
-    unsigned long   gpstime;
-    char            imualig;
-    char            gnssstatus;
-    double          lat;
-    double          lon;
-    double          alt;
-    float           northvel;
-    float           eastvel;
-    float           downvel;
-    float           speed;
-    double          roll;
-    double          pitch;
-    double          heading;
-    double          trackangle;
-    float           gyro_x; //degrees / sec
-    float           gyro_y;
-    float           gyro_z;
-    float           acc_x;  //meters / sec~2
-    float           acc_y;
-    float           acc_z;
-};
-
-
-struct GSOF_32H//RMS
-{
-	char            recordtype;
-	char            recordlength;
-	short           gpsweek;
-    unsigned long   gpstime;
-    char            imustatus;
-    char            gnssstatus;
-    float           northRMS;
-	float           eastRMS;
-    float           downRMS;
-    float           northvel;
-    float           eastvel;
-    float           downvel;
-    float           rollRMS;
-    float           pitchRMS;
-    float           headingRMS;
-};
-
-
-struct RecordData
-{
-    char stx;
-    char status;
-    char packettype;
-    char length;
-    char transnum;
-    char pgindex;
-    char pgmxindex;
-    GSOF_31H gsofdata;
-    char     checksum;
-    char     etx;
-};
-
-#pragma pack(pop)
-
-
-template<typename T>
-T SwitchByteStorage(T t)
-{
-    constexpr size_t len = sizeof(T);
-    char ch[len];
-    char dst[len];
-	memcpy(ch, &t, len);
-
-    constexpr size_t half = len >> 1;
-    for (size_t i = 0; i < half; ++i)
-    {
-        auto tempidx = len - 1 - i;
-        ch[i]       = ch[i] ^ ch[tempidx];
-        ch[tempidx] = ch[i] ^ ch[tempidx];
-        ch[i]       = ch[i] ^ ch[tempidx];
-    }
-
-	T result;
-	memcpy(&result, ch, len);
-    return result;
-}
-
-#include <QDebug>
+#include "LVXDataParse.h"
 #include <QTime>
+#include <QDebug>
 void Tool_BinMerge::getLvxData()
 {
     QString file = QFileDialog::getOpenFileName(nullptr, "", QString(), "Date(*.dat)");
-    
-    if (!file.isEmpty() && std::filesystem::exists(file.toStdString()))
-    {
-       
-        std::ifstream  datfile(file.toStdString(),std::ios::binary);
-        constexpr size_t  datasize = sizeof(GSOF_31H);
-        constexpr size_t  recordsize = sizeof(RecordData);
-        static_assert(datasize == 106/*单条总长度*/, "the full data len is error");
-        constexpr char headmark = 0x02;
-       
-		std::string content;
-		content.assign(std::istreambuf_iterator<char>(datfile), std::istreambuf_iterator<char>());
-
-        size_t index = 0;
-        do 
-        {  //去噪
-            while (content[index] != headmark)
-                ++index;
-
-            RecordData item;
-            memcpy((void*)(&item), (void*)(&content[index]), recordsize);
-            qDebug() << (int)item.stx << " " << (int)item.etx << " " << (int)item.packettype << " " << (unsigned char)item.checksum << endl;
-            double cur = fmod((SwitchByteStorage(item.gsofdata.gpstime) / 1000.0), 86400);
-            qDebug() << (int)item.gsofdata.recordtype << " " << SwitchByteStorage(item.gsofdata.gpstime)<< "->" << cur << " " << SwitchByteStorage(item.gsofdata.acc_x) << endl;
-            QTime time = QTime(0,0).addSecs(cur);
-            qDebug() << time.toString() << endl;
-            index += recordsize;
-        } while (index < content.size());
-       
-    }
+   
+    ReadLVXRawData(file.toStdString(), [](const LvxDataSegment& data) {
+        auto imudata = std::move(data.gsofdata);
+        qDebug() << fmod(imudata.gpstime/1000.0, 86400) << " " << imudata.gyro_x << " " << imudata.gyro_y << " " << imudata.acc_x << endl;
+        qDebug() << imudata.lon << " " << imudata.lat << endl;
+        });
 }    

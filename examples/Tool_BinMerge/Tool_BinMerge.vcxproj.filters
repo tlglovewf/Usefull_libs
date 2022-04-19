@@ -51,5 +51,8 @@
     <ClInclude Include="PandarX32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LVXDataParse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO "></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
+<script type="text/javascript" src="qwebchannel.js"></script>
+<title>基于GPS的位置追踪及地理围栏</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+////地图初始化
+var mapOptions={
+    minZoom: 3,                 //最小级别
+    maxZoom:22,                 //最大级别
+    mapType:  BMAP_NORMAL_MAP   //默认街道图
+}
+
+var map = new BMap.Map("allmap",mapOptions);        // 创建Map实例 命名空间为BMAP
+map.centerAndZoom(new BMap.Point(114.0, 30.0), 15);  // 初始化地图,设置中心点坐标和地图级别
+map.setCurrentCity("武汉");          // 设置地图显示的城市
+map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+var disTool = new BMapLib.DistanceTool(map);
+
+var iindex = 10;
+
+function getIIndex()
+{
+    return iindex;
+}
+
+function startDistanceTool()
+{
+    disTool.open();
+}
+
+function endDistanceTool()
+{
+    disTool.close();
+}
+
+function clearOverlay()
+{
+    map.clearOverlays();
+}
+
+var realtrack = [];   //truth    point
+var esttrack  = [];   //estimate point
+var premarker;
+var link_line;
+function drawcurrentpt( index_str )
+{//point select
+
+    var index = index_str.substring(1,index_str.length-1);
+
+    var opts = {
+        width : 200,
+        height: 100,
+        title : 'pic:' + index,
+        enableMessage: true
+    }
+
+    for(i = 0;i < esttrack.length; ++i)
+    {
+        if( esttrack[i].id == index )
+        {
+            var infoWindow = new BMap.InfoWindow(
+                                      'lon:'  + esttrack[i].lng + '\n' +
+                                      'lat:'  + esttrack[i].lat + '\n' +
+                                      'resx:' + esttrack[i].resx+ '\n' +
+                                      'resy:' + esttrack[i].resy+ '\n'
+                                      ,opts);
+
+            map.openInfoWindow(infoWindow,esttrack[i]);
+
+            if(premarker != null)
+                map.removeOverlay(premarker);
+
+            if(link_line != null)
+                map.removeOverlay(link_line);
+
+            var marker = new BMap.Marker(esttrack[i]);
+
+            map.addOverlay(marker);
+
+            premarker = marker;
+
+
+            var linkline = [];
+            linkline.push(realtrack[i]);
+            linkline.push(esttrack[i]);
+            link_line =new BMap.Polyline(linkline, {
+                            enableEditing: false,//是否启用线编辑，默认为false
+                            enableClicking: false,//是否响应点击事件，默认为true
+                            strokeWeight:'1',//折线的宽度，以像素为单位
+                            strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+                            strokeColor:"red" //折线颜色
+                            });
+            map.addOverlay(link_line);         //增加折线
+
+            break;
+        }
+    }
+}
+
+function showarray(numlist,num2list,flnms,isreal,resx,resy)                    //仅把qt传来的数组转换成可用的list
+{
+    var num_list,num2_list;                         //以下为格式转换，分割成可用的数组
+    num_list = numlist.substring(1,numlist.length-1);
+    num2_list = num2list.substring(1,num2list.length-1);
+    var fname_list = flnms.substring(1,flnms.length-1);
+    var bol = isreal.substring(1,isreal.length-1);
+    var resx_list = resx.substring(1,resx.length-1);
+    var resy_list = resy.substring(1,resy.length-1);
+    num_list = num_list.split(",");
+    num2_list = num2_list.split(",");
+    fname_list = fname_list.split(",");
+    resx_list = resx_list.split(",");
+    resy_list = resy_list.split(",");
+
+
+    var tracelist = [];     //为轨迹做准备，把所有的点扔里面，但不对每个点标注
+    for(i=0;i<num_list.length;i++)
+    {
+         var pt = GPS.gcj_encrypt(Number(num2_list[i]),Number(num_list[i]));
+         var result = GPS.bd_encrypt(pt.lat,pt.lon);
+         point= new BMap.Point(result.lon,result.lat);
+         point.id = fname_list[i];
+         point.resx = resx_list[i];
+         point.resy = resy_list[i];
+	　point.olng = num_list[i];
+	 point.olat = num2_list[i];
+         tracelist.push(point);                                  //将每个点压入数组
+    }
+
+    map.centerAndZoom(tracelist[0], 17);
+
+    //首尾加上标注点
+
+    var options;
+
+    if(bol[0] < 1.0)
+    {
+        options = {
+            size: 3,
+            shape: 5,//BMAP_POINT_SHAPE_CIRCLE,
+            color: '#ff0000',
+            opacity: 0.5
+        }
+        esttrack = tracelist;
+    }
+    else
+    {
+        options = {
+            size: 3,
+            shape: 5,//BMAP_POINT_SHAPE_CIRCLE,
+            color: '#00ff00'
+        }
+        realtrack = tracelist;
+    }
+    var points = new BMap.PointCollection(tracelist,options);
+
+    points.addEventListener('click', function(e){
+    var opts = {
+         width : 180,
+         height: 100,
+         title : 'pic:' + e.point.id,
+         enableMessage: true
+    }
+    var infoWindow = new BMap.InfoWindow(
+    'lon :' + e.point.olng + '\t' + 'lat :' + e.point.olat + '\t' +
+    'resx:' + e.point.resx + '\t' + 'resy:' + e.point.resy
+    ,opts);
+
+    map.openInfoWindow(infoWindow,e.point);
+
+    document.title = e.point.id;
+
+    if(esttrack.length != 0)
+    {
+        for(i = 0;i < realtrack.length;++i)
+        {
+            if(realtrack[i].id == e.point.id)
+            {
+                var linkline = [];
+                linkline.push(realtrack[i]);
+                linkline.push(esttrack[i]);
+                var polyline =new BMap.Polyline(linkline, {
+                enableEditing: false,//是否启用线编辑，默认为false
+                enableClicking: false,//是否响应点击事件，默认为true
+                strokeWeight:'1',//折线的宽度，以像素为单位
+                strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+                strokeColor:"red" //折线颜色
+                });
+                map.addOverlay(polyline);         //增加折线
+                break;
+            }
+        }
+    }
+
+    });
+    map.addOverlay(points);
+
+    var startmarker = new BMap.Marker(tracelist[0]);
+    map.addOverlay(startmarker);
+}
+
+var GPS = {
+PI : 3.14159265358979324,
+x_pi : 3.14159265358979324 * 3000.0 / 180.0,
+delta : function (lat, lon) {
+// Krasovsky 1940
+//
+// a = 6378245.0, 1/f = 298.3
+// b = a * (1 - f)
+// ee = (a^2 - b^2) / a^2;
+var a = 6378137.0;
+var ee = 0.00669342162296594323;
+var dLat = this.transformLat(lon - 105.0, lat - 35.0);
+var dLon = this.transformLon(lon - 105.0, lat - 35.0);
+var radLat = lat / 180.0 * this.PI;
+var magic = Math.sin(radLat);
+magic = 1 - ee * magic * magic;
+var sqrtMagic = Math.sqrt(magic);
+    dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * this.PI);
+    dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * this.PI);
+    return {'lat': dLat, 'lon': dLon};
+},
+
+//WGS-84 to GCJ-02
+gcj_encrypt : function (wgsLat, wgsLon) {
+if (this.outOfChina(wgsLat, wgsLon))
+return {'lat': wgsLat, 'lon': wgsLon};
+
+var d = this.delta(wgsLat, wgsLon);
+return {'lat' : wgsLat + d.lat,'lon' : wgsLon + d.lon};
+},
+//GCJ-02 to WGS-84
+gcj_decrypt : function (gcjLat, gcjLon) {
+if (this.outOfChina(gcjLat, gcjLon))
+    return {'lat': gcjLat, 'lon': gcjLon};
+
+var d = this.delta(gcjLat, gcjLon);
+    return {'lat': gcjLat - d.lat, 'lon': gcjLon - d.lon};
+},
+//GCJ-02 to WGS-84 exactly
+gcj_decrypt_exact : function (gcjLat, gcjLon) {
+    var initDelta = 0.01;
+    var threshold = 0.000000001;
+    var dLat = initDelta, dLon = initDelta;
+    var mLat = gcjLat - dLat, mLon = gcjLon - dLon;
+    var pLat = gcjLat + dLat, pLon = gcjLon + dLon;
+    var wgsLat, wgsLon, i = 0;
+    while (1) {
+    wgsLat = (mLat + pLat) / 2;
+    wgsLon = (mLon + pLon) / 2;
+    var tmp = this.gcj_encrypt(wgsLat, wgsLon)
+    dLat = tmp.lat - gcjLat;
+    dLon = tmp.lon - gcjLon;
+    if ((Math.abs(dLat) < threshold) && (Math.abs(dLon) < threshold))
+    break;
+
+    if (dLat > 0) pLat = wgsLat; else mLat = wgsLat;
+    if (dLon > 0) pLon = wgsLon; else mLon = wgsLon;
+
+    if (++i > 10000) break;
+    }
+    //console.log(i);
+    return {'lat': wgsLat, 'lon': wgsLon};
+},
+//GCJ-02 to BD-09
+bd_encrypt : function (gcjLat, gcjLon) {
+    var x = gcjLon, y = gcjLat;
+    var z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * this.x_pi);
+    var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * this.x_pi);
+    bdLon = z * Math.cos(theta) + 0.0065;
+    bdLat = z * Math.sin(theta) + 0.006;
+    return {'lat' : bdLat,'lon' : bdLon};
+    },
+    //BD-09 to GCJ-02
+    bd_decrypt : function (bdLat, bdLon) {
+    var x = bdLon - 0.0065, y = bdLat - 0.006;
+    var z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * this.x_pi);
+    var theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * this.x_pi);
+    var gcjLon = z * Math.cos(theta);
+    var gcjLat = z * Math.sin(theta);
+    return {'lat' : gcjLat, 'lon' : gcjLon};
+},
+//WGS-84 to Web mercator
+//mercatorLat -> y mercatorLon -> x
+mercator_encrypt : function(wgsLat, wgsLon) {
+    var x = wgsLon * 20037508.34 / 180.;
+    var y = Math.log(Math.tan((90. + wgsLat) * this.PI / 360.)) / (this.PI / 180.);
+    y = y * 20037508.34 / 180.;
+    return {'lat' : y, 'lon' : x};
+    },
+    // Web mercator to WGS-84
+    // mercatorLat -> y mercatorLon -> x
+    mercator_decrypt : function(mercatorLat, mercatorLon) {
+    var x = mercatorLon / 20037508.34 * 180.;
+    var y = mercatorLat / 20037508.34 * 180.;
+    y = 180 / this.PI * (2 * Math.atan(Math.exp(y * this.PI / 180.)) - this.PI / 2);
+    return {'lat' : y, 'lon' : x};
+    },
+    // two point's distance
+    distance : function (latA, lonA, latB, lonB) {
+    var earthR = 6371000.;
+    var x = Math.cos(latA * this.PI / 180.) * Math.cos(latB * this.PI / 180.) * Math.cos((lonA - lonB) * this.PI / 180);
+    var y = Math.sin(latA * this.PI / 180.) * Math.sin(latB * this.PI / 180.);
+    var s = x + y;
+    if (s > 1) s = 1;
+    if (s < -1) s = -1;
+    var alpha = Math.acos(s);
+    var distance = alpha * earthR;
+    return distance;
+    },
+    outOfChina : function (lat, lon) {
+    if (lon < 72.004 || lon > 137.8347)
+    return true;
+    if (lat < 0.8293 || lat > 55.8271)
+        return true;
+    return false;
+},
+transformLat : function (x, y) {
+    var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * this.PI) + 20.0 * Math.sin(2.0 * x * this.PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(y * this.PI) + 40.0 * Math.sin(y / 3.0 * this.PI)) * 2.0 / 3.0;
+    ret += (160.0 * Math.sin(y / 12.0 * this.PI) + 320 * Math.sin(y * this.PI / 30.0)) * 2.0 / 3.0;
+    return ret;
+},
+transformLon : function (x, y) {
+    var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * this.PI) + 20.0 * Math.sin(2.0 * x * this.PI)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(x * this.PI) + 40.0 * Math.sin(x / 3.0 * this.PI)) * 2.0 / 3.0;
+    ret += (150.0 * Math.sin(x / 12.0 * this.PI) + 300.0 * Math.sin(x / 30.0 * this.PI)) * 2.0 / 3.0;
+    return ret;
+}
+};
+
+</script>

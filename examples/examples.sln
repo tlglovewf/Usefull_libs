@@ -62,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{74871C3A
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool_BinMerge", "Tool_BinMerge\Tool_BinMerge.vcxproj", "{C7A38C44-927B-4313-80EC-0FB00D905704}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool_TrackDisplay", "Tool_TrackDisplay\Tool_TrackDisplay.vcxproj", "{214876AE-FB60-324B-8A2F-FDA687C65E27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -260,6 +262,12 @@ Global
 		{C7A38C44-927B-4313-80EC-0FB00D905704}.Release|x64.ActiveCfg = Release|x64
 		{C7A38C44-927B-4313-80EC-0FB00D905704}.Release|x64.Build.0 = Release|x64
 		{C7A38C44-927B-4313-80EC-0FB00D905704}.Release|x86.ActiveCfg = Release|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Debug|x64.ActiveCfg = Debug|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Debug|x64.Build.0 = Debug|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Debug|x86.ActiveCfg = Debug|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Release|x64.ActiveCfg = Release|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Release|x64.Build.0 = Release|x64
+		{214876AE-FB60-324B-8A2F-FDA687C65E27}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -288,6 +296,7 @@ Global
 		{9C83B919-84F3-46B7-8A6A-7804F878A95F} = {474A75F1-72F2-4F8D-AEE8-1471C3CB8774}
 		{426055B1-5B72-4324-8A54-E98586958582} = {474A75F1-72F2-4F8D-AEE8-1471C3CB8774}
 		{C7A38C44-927B-4313-80EC-0FB00D905704} = {74871C3A-56A0-4A5B-9D80-74B9FDF7D589}
+		{214876AE-FB60-324B-8A2F-FDA687C65E27} = {74871C3A-56A0-4A5B-9D80-74B9FDF7D589}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72C35D38-A460-4F38-889B-0652DFA0B0C7}
