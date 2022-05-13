@@ -114,6 +114,14 @@ typedef struct tag_PauseTime {
 	}
 }_PauseTime;
 
+
+struct PosItem 
+{
+	float  gpstime;
+	double lon;
+	double lat;
+};
+
 //pcap文件统计信息数据结构
 typedef struct tag_Pcapfile {
 	bool _paused = false;  //暂停标识
@@ -124,6 +132,7 @@ typedef struct tag_Pcapfile {
 	int64_t _size = 0;
 	int32_t _pkgmissedmax = 0;	//单次丢帧最大数量
 	int64_t _packetmissed = 0;	//共丢多少帧
+	std::vector<PosItem> _pos;
 	std::string _path = "";
 	tag_Pcapfile() {
 

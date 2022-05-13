@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <streambuf>
+#include <regex>
+
 
 #include <pcap.h>
 
@@ -56,15 +58,19 @@ bool FileProcesser::Binary_Merge(const std::vector<std::string>& files, const st
 /// </summary>
 /// <param name="name"></param>
 /// <returns></returns>
-std::shared_ptr<ITrans> FileProcesser::CreateTrans(const std::string& name /*= "Las"*/)
+std::shared_ptr<ITrans> FileProcesser::CreateTrans(const std::string& name /*= "Pos"*/)
 {
 	if (name == "Las")
 	{
 		return std::make_shared<LasTrans>();
 	}
-	else if (name == "Ply")
+	else if (name == "Pcd")
 	{
-		return nullptr;
+		return std::make_shared<PcdTrans>();
+	}
+	else if( name == "Pos")
+	{
+		return std::make_shared<PosTrans>();
 	}
 	//add more types ...
 	else
@@ -72,6 +78,8 @@ std::shared_ptr<ITrans> FileProcesser::CreateTrans(const std::string& name /*= "
 		return nullptr;
 	}
 }
+
+extern bool ReadPcapFile(_Pcapfile& file);
 
 struct pktStruct {
 	struct pcap_pkthdr pkt_header; // header object
@@ -230,6 +238,11 @@ bool FileProcesser::Pcap_Merge(const std::vector<std::string>& files, const std:
 	return true;
 }
 
+bool PcdTrans::trans(const std::string& inputfile, const std::string& outfile)
+{
+	return true;
+}
+
 bool LasTrans::trans(const std::string& inputfile, const std::string& outfile)
 {
 	if (inputfile.empty() || outfile.empty())
@@ -242,6 +255,37 @@ bool LasTrans::trans(const std::string& inputfile, const std::string& outfile)
 	else
 	{
 
+	}
+
+	return true;
+}
+
+
+bool PosTrans::trans(const std::string& inputfile, const std::string& outfile)
+{
+	if (inputfile.empty() || outfile.empty())
+	{
+		
+		return false;
+	}
+	else
+	{
+		_Pcapfile pcapfile;
+		pcapfile._path = inputfile;
+		if (ReadPcapFile(pcapfile))
+		{
+			std::ofstream  ofile(outfile);
+
+			for (const auto& item : pcapfile._pos)
+			{
+				ofile.precision(10);
+				ofile << item.lat << "," << item.lon << "," << item.gpstime << ",0,0,0" << std::endl;
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -271,7 +315,7 @@ splitSV(std::string_view strv, std::string_view delims = " ")
 }
 
 #pragma comment(lib,"wpcap.lib")
-bool LasTrans::readPcapFile(_Pcapfile& file)
+static bool ReadPcapFile(_Pcapfile& file)
 {
 	if (std::filesystem::exists(file._path))
 	{
@@ -313,17 +357,30 @@ bool LasTrans::readPcapFile(_Pcapfile& file)
 
 				std::string _str(_szgprmc);
 				std::string _gprmc = "";
+				static const std::regex rgx("^\\$GPRMC,[\\d\\.]*,[A|V],(-?[0-9]*\\.?[0-9]+),([NS]*),(-?[0-9]*\\.?[0-9]+),([EW]*),.*");
+
+				
 				auto _slist = splitSV(_str, ",");
 
-				//解析GPRMC  utc 2 gps
-				if (_slist.size() > 2)
+				if (!std::regex_match(_str, rgx) || (_slist.size() != 13))
 				{
-					
+					std::cout << _str << " GPRMC DATA ERROR!" << std::endl;
+					continue;
 				}
+				PosItem item;
+				auto wsec = std::atof(_slist[1].data());
+				auto lng  = std::atof(_slist[5].data()) * 0.01;
+				auto lat  = std::atof(_slist[3].data()) * 0.01;
+				item.lon = (int)lng + (lng - (int)lng) * 5 / 3.0;
+				item.lat = (int)lat + (lat - (int)lat) * 5 / 3.0;
+				
+				//UIT 2 GPS 要加闰秒
+				item.gpstime = (int)wsec % 100 + ((int)(wsec / 100)) % 100 * 60 + ((int)(wsec / 10000)) * 3600 + 18;
+				file._pos.emplace_back(item);
 			}
 		}
 		//包损坏了
-		if (res < 0)
+		if (res == -1)
 		{
 			file._broken = true;
 			pcap_close(fp);

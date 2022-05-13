@@ -10,13 +10,12 @@ class Tool_BinMerge : public QMainWindow
 public:
     Tool_BinMerge(QWidget *parent = Q_NULLPTR);
 
-
     void switchUiStatus(bool status);
 
     void printLine(const QString& line);
 
 signals:
-    void handleFile(const QString& path);
+    void handleLog(const QString& path);
     void endhandle(bool status);
 private slots:
 
@@ -24,8 +23,9 @@ private slots:
     void chooseTransFile();
 
     void getLvxData();
+    void getpcapData();
 
-    void onHandleFile(const QString& path);
+    void onHandleLog(const QString& log);
     void onEndHandle(bool status);
 
 protected:

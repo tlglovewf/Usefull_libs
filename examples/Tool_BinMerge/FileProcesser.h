@@ -47,9 +47,17 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	static std::shared_ptr<ITrans> CreateTrans(const std::string& name = "Las");
+	static std::shared_ptr<ITrans> CreateTrans(const std::string& name = "Pos");
 protected:
 	FileProcesser(const FileProcesser&) = delete;
+};
+
+class PcdTrans : public ITrans
+{
+public:
+	virtual std::string name()const override { return "Pcd"; }
+
+	virtual bool trans(const std::string& inputfile, const std::string& outfile) override;
 };
 
 class LasTrans : public ITrans
@@ -58,9 +66,14 @@ public:
 	virtual std::string name()const override { return "Las"; }
 
 	virtual bool trans(const std::string& inputfile, const std::string& outfile) override;
+};
 
-protected:
-	bool readPcapFile(_Pcapfile& file);
+class PosTrans : public ITrans
+{
+public:
+	virtual std::string name()const override { return "Pos"; }
+
+	virtual bool trans(const std::string& inputfile, const std::string& outfile) override;
 };
 
 

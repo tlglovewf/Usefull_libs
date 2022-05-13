@@ -14,92 +14,99 @@
    <string>Tool_BinMerge</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="btnSelectFiles">
-          <property name="text">
-           <string>选择文件</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnSelectDir">
-          <property name="text">
-           <string>选择目录</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="btnTrans">
-          <property name="text">
-           <string>转换</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cmbList">
-          <item>
-           <property name="text">
-            <string>Pcap</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Binary</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnLvxTrans">
+       <widget class="QPushButton" name="btnSelectFiles">
         <property name="text">
-         <string>提取数据</string>
+         <string>选择文件</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="lstDisplay">
-        <property name="movement">
-         <enum>QListView::Static</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="pgbStatus">
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lblStatus">
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
+       <widget class="QPushButton" name="btnSelectDir">
         <property name="text">
-         <string>TextLabel</string>
+         <string>选择目录</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item>
+    <item row="0" column="1" rowspan="6">
      <widget class="QOpenGLWidget" name="ogwDisplay">
       <property name="minimumSize">
        <size>
         <width>320</width>
         <height>0</height>
        </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="btnTrans">
+        <property name="text">
+         <string>转换</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cmbList">
+        <item>
+         <property name="text">
+          <string>Pcap</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Binary</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="btnLvxTrans">
+        <property name="text">
+         <string>提取IMU数据</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnPcapTrans">
+        <property name="text">
+         <string>提取Pcap数据</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <widget class="QListView" name="lstDisplay">
+      <property name="movement">
+       <enum>QListView::Static</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QProgressBar" name="pgbStatus">
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="lblStatus">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
       </property>
      </widget>
     </item>

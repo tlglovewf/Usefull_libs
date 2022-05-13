@@ -123,11 +123,31 @@ protected:
 	GuassMath() = default;
 };
 
+#define EARTH_RADIUS 6378137
+#define PI           3.141592657
+
+#define D2R(X)      ((X) * 0.0174532925388889)
+
+//经度转墨卡托
+static double lon2Mercator(double lon) {
+	return D2R(lon) * EARTH_RADIUS;
+}
+
+//纬度转墨卡托
+ static double lat2Mercator(double lat) {
+	double y = log(tan((90 + lat) * PI / 360)) / (PI / 180);
+	return D2R(y) * EARTH_RADIUS;
+}
 
 int main(int argc, char** argv)
 {
+	std::cout.precision(15);	  
+	std::cout << lon2Mercator(-74.564531) << " " << lat2Mercator(40.663508) << std::endl;
+	std::cout << lon2Mercator(-74.564528) << " " << lat2Mercator(40.663506) << std::endl;
+	
+	getchar();
+	return 0;
 
- 
 	DEG_TO_RAD;
 
 	projPJ  wgsprj = pj_init_plus("+proj=longlat +datum=WGS84 +no_defs");

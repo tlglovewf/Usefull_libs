@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     mpMap = new QWebEngineView(ui->bkWidget);
 
-    //mpMap->load(QUrl("file:/media/tu/Work/GitHub/TrackDisplay/map.html"));
     QString str = QCoreApplication::applicationDirPath();
     mpMap->load(QUrl("file:///"+ str + "/../map.html"));
     QSize sz = ui->bkWidget->size();
@@ -145,7 +144,6 @@ void MainWindow::GetImage(const QString &str)
         }
     }
 }
-
 
 void MainWindow::displayImg()
 {

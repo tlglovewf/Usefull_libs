@@ -4,3 +4,12 @@ vsproject
 .vs
 libgflags
 liblog
+*.obj
+*.log
+*.ilk
+*.tlog
+*.pdb
+debug
+examples/Test_Eigen/test.bin
+libopencv/bin/opencv_world455.dll
+libopencv/bin/opencv_world455d.dll
