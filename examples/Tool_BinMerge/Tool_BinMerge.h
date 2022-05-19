@@ -21,6 +21,7 @@ private slots:
 
     void chooseFiles();
     void chooseTransFile();
+    void openExeDir();
 
     void getLvxData();
     void getpcapData();
@@ -28,6 +29,7 @@ private slots:
     void onHandleLog(const QString& log);
     void onEndHandle(bool status);
 
+    
 protected:
     void closeEvent(QCloseEvent* event);
 private:

@@ -42,6 +42,15 @@ public:
 	/// <returns></returns>
 	static bool Pcap_Merge(const std::vector<std::string>& files, const std::string& output, std::function<void(const std::string&)> func = nullptr);
 
+
+	/// <summary>
+	/// 文件差分(Pcap拆分)
+	/// </summary>
+	/// <param name="filepath">拆分路径</param>
+	/// <param name="timelen">拆分时长</param>
+	/// <returns></returns>
+	static bool Pcap_Split(const std::string& filepath, int timelen = 20);
+
 	/// <summary>
 	/// 创建转换类
 	/// </summary>

@@ -71,6 +71,20 @@ T SwitchByteStorage(T t)
 	return result;
 }
 
+quint32 s_convertToUint32(const unsigned char* ptr)
+{
+	quint32 temp = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
+	return temp;
+}
+
+float s_convertToFloat(const unsigned char* ptr)
+{
+	quint32 temp = s_convertToUint32(ptr);
+	float ret;
+	memcpy(&ret, &temp, sizeof(float));
+
+	return ret;
+}
 
 /// <summary>
 ///  ¶ÁÈ¡lvx datÎÄ¼þ
@@ -114,16 +128,20 @@ void ReadLVXRawData(const std::string& path, std::function<void(const LvxDataSeg
 			item.gsofdata.pitch		 = SwitchByteStorage(item.gsofdata.pitch	  );
 			item.gsofdata.heading	 = SwitchByteStorage(item.gsofdata.heading	  );
 			item.gsofdata.trackangle = SwitchByteStorage(item.gsofdata.trackangle );
-			item.gsofdata.gyro_x	 = SwitchByteStorage(item.gsofdata.gyro_x	  );
-			item.gsofdata.gyro_y	 = SwitchByteStorage(item.gsofdata.gyro_y	  );
-			item.gsofdata.gyro_z	 = SwitchByteStorage(item.gsofdata.gyro_z	  );
-			item.gsofdata.acc_x		 = SwitchByteStorage(item.gsofdata.acc_x	  );
-			item.gsofdata.acc_y		 = SwitchByteStorage(item.gsofdata.acc_y	  );
-			item.gsofdata.acc_z		 = SwitchByteStorage(item.gsofdata.acc_z	  );
+			item.gsofdata.gyro_x	 = SwitchByteStorage(item.gsofdata.gyro_x);
+			item.gsofdata.gyro_y	 = SwitchByteStorage(item.gsofdata.gyro_y);
+			item.gsofdata.gyro_z	 = SwitchByteStorage(item.gsofdata.gyro_z);
+			item.gsofdata.acc_x		 = SwitchByteStorage(item.gsofdata.acc_x);
+			item.gsofdata.acc_y		 = SwitchByteStorage(item.gsofdata.acc_y);
+			item.gsofdata.acc_z		 = SwitchByteStorage(item.gsofdata.acc_z);
+			index += recordsize;
+
+			if(fabs(item.gsofdata.pitch) > 360.0 )
+				continue;//bad data
 			if (func)
 				func(item);
 			
-			index += recordsize;
+			
 		} while (index < content.size());
 
 	}

@@ -1,10 +1,11 @@
 #include "FileProcesser.h"
+#include "T_Functions.h"
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <streambuf>
 #include <regex>
-
 
 #include <pcap.h>
 
@@ -51,7 +52,6 @@ bool FileProcesser::Binary_Merge(const std::vector<std::string>& files, const st
 
 	return true;
 }
-
 
 /// <summary>
 /// 创建转换类
@@ -160,8 +160,7 @@ void sortPcap(pcap_t* spcap, const std::string sortedFile) {
 
 	/* dump the ordered packets to the new file */
 	pcap_t* finalPcap = pcap_open_dead(DLT_EN10MB, 262144); // dumper will use it
-	pcap_dumper_t* tmpDump = pcap_dump_open(finalPcap,
-		/*"/home/xing/Desktop/result.pcap"*/sortedFile.c_str()); // will be used to dump packets to the new file
+	pcap_dumper_t* tmpDump = pcap_dump_open(finalPcap,sortedFile.c_str()); // will be used to dump packets to the new file
 
 	for (std::vector<pktStruct>::size_type ix = 0; ix < pktVector.size(); ix++) {
 		pcap_dump((unsigned char*)tmpDump, &pktVector.at(ix).pkt_header,
@@ -260,7 +259,6 @@ bool LasTrans::trans(const std::string& inputfile, const std::string& outfile)
 	return true;
 }
 
-
 bool PosTrans::trans(const std::string& inputfile, const std::string& outfile)
 {
 	if (inputfile.empty() || outfile.empty())
@@ -289,29 +287,6 @@ bool PosTrans::trans(const std::string& inputfile, const std::string& outfile)
 	}
 
 	return true;
-}
-
-
-std::vector<std::string_view>
-splitSV(std::string_view strv, std::string_view delims = " ")
-{
-	std::vector<std::string_view> output;
-	size_t first = 0;
-
-	while (first < strv.size())
-	{
-		const auto second = strv.find_first_of(delims, first);
-
-		if (first != second)
-			output.emplace_back(strv.substr(first, second - first));
-
-		if (second == std::string_view::npos)
-			break;
-
-		first = second + 1;
-	}
-
-	return output;
 }
 
 #pragma comment(lib,"wpcap.lib")
@@ -359,9 +334,8 @@ static bool ReadPcapFile(_Pcapfile& file)
 				std::string _gprmc = "";
 				static const std::regex rgx("^\\$GPRMC,[\\d\\.]*,[A|V],(-?[0-9]*\\.?[0-9]+),([NS]*),(-?[0-9]*\\.?[0-9]+),([EW]*),.*");
 
-				
-				auto _slist = splitSV(_str, ",");
-
+				auto _slist = CommUtils::Functions::splitSV(_str, ",");
+				file._gpscnt++;
 				if (!std::regex_match(_str, rgx) || (_slist.size() != 13))
 				{
 					std::cout << _str << " GPRMC DATA ERROR!" << std::endl;
@@ -396,4 +370,117 @@ static bool ReadPcapFile(_Pcapfile& file)
 	{
 		return false;
 	}
+}
+
+#include <sstream>
+static std::string addtime(const std::string& info, int t = 20)
+{
+	int h, m, s;//时分秒
+	sscanf(info.c_str(), "%2d%2d%2d", &h, &m, &s);
+
+	size_t total = h * 3600 + m * 60 + s;
+
+	total += t;
+
+	h = total / 3600;
+	m = (total - h * 3600) / 60;
+	s = total % 60;
+
+	std::stringstream ss;
+#define FMT std::setfill('0') << std::setw(2)
+	ss << FMT << h << FMT << m << FMT << s;
+#undef FMT
+
+	return ss.str();
+}
+
+#include <QDebug>
+/// <summary>
+/// 文件差分(Pcap拆分)
+/// </summary>
+/// <param name="filepath">拆分路径</param>
+/// <param name="timelen">拆分时长</param>
+/// <returns></returns>
+bool FileProcesser::Pcap_Split(const std::string& filepath, int timelen /*= 20*/)
+{
+	int timecount = 0;
+
+	if (std::filesystem::exists(filepath))
+	{
+		pcap_t* fp = nullptr;
+		char errbuf[PCAP_ERRBUF_SIZE] = { 0 };
+		size_t nps = filepath.find_last_of('/') + 1;
+		std::string folderpath = filepath.substr(0, nps);
+		std::string filename   = filepath.substr(nps);
+
+		size_t eps = filename.find_first_of('-');
+		std::string prjname = filename.substr(0,eps);
+		std::string suffix = filename.substr(eps);
+
+		int h, m, s;//时分秒
+		std::string timestr = prjname.substr(prjname.size() - 6);
+		prjname = prjname.substr(0, prjname.size() - 6);
+		sscanf(timestr.c_str(), "%2d%2d%2d", &h, &m, &s);
+
+		const std::string tempname = filepath + "_temp";
+
+		//std::filesystem::copy(filepath, tempname);
+		
+		timestr = addtime(timestr);
+		/* Open the capture file */
+		if ((fp = pcap_open_offline((tempname).c_str(),		// name of the device
+									errbuf					// error buffer
+			)) == NULL)
+		{
+			return false;
+		}
+		else
+		{
+			int res = 0;
+			struct pcap_pkthdr* header = nullptr;
+			const u_char* pkt_data = nullptr;
+
+			pcap_dumper_t* p_dumper = nullptr;
+			
+			/* Retrieve the packets from the file */
+			while ((res = pcap_next_ex(fp, &header, &pkt_data)) >= 0)
+			{
+				if (p_dumper == nullptr)
+				{
+					std::string outpath = folderpath + prjname + timestr + suffix;
+
+					p_dumper = pcap_dump_open(fp, outpath.c_str());
+					if (p_dumper == nullptr)
+					{
+						std::cout << "create pcap error: " << errbuf << std::endl;
+					}
+					timestr = addtime(timestr);
+				}
+				pcap_dump((u_char*)p_dumper, header, pkt_data);
+				
+				//554 表示gps数据包字节数字
+				if (header->len == 554)
+				{
+					++timecount;
+				}
+				// 以20s 切分一个包
+				if (timecount == 20)
+				{
+					pcap_dump_close(p_dumper);
+					p_dumper = nullptr;
+					timecount = 0;
+				}
+			}
+			//生成最后一段
+			if (timecount > 0)
+			{
+				pcap_dump_close(p_dumper);
+			}
+		}
+
+		pcap_close(fp);
+		//std::filesystem::remove(tempname);
+	}
+
+	return true;
 }

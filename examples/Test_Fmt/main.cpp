@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fmt/fmt.h>
+#include "T_Functions.h"
 using namespace std;
-
 
 int main(int argc, char** argv)
 {
@@ -28,5 +28,12 @@ int main(int argc, char** argv)
 
 	//unicode
 	std::cout << fmt::format("{0},{1}", "Äã", "ºÃ") << std::endl;
+
+	
+
+	std::cout << "--------------------------------------------------" << std::endl;
+
+	std::cout << CommUtils::Functions::WriteLine<10,3>(10.12345, 12.54321, 13.11223) << std::endl;
+
 	return 0;
 }

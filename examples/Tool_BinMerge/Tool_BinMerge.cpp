@@ -7,16 +7,23 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QTimer>
+#include <QProcess>
 
 #include <thread>
 #include <fstream>
 #include <filesystem>
 
 
+#include "T_Functions.h"
+
 
 #ifdef Q_OS_WIN
 #pragma execution_character_set("utf-8")   //解决 VS编译器下中文乱码
 #endif
+
+
+const std::string imufile = "sensor_imu.txt";
+
 Tool_BinMerge::Tool_BinMerge(QWidget* parent)
 	: QMainWindow(parent)
 {
@@ -27,6 +34,7 @@ Tool_BinMerge::Tool_BinMerge(QWidget* parent)
 	connect(ui.btnTrans, SIGNAL(clicked()), this, SLOT(chooseTransFile()));
 	connect(ui.btnLvxTrans, SIGNAL(clicked()), this, SLOT(getLvxData()));
 	connect(ui.btnPcapTrans, SIGNAL(clicked()), this, SLOT(getpcapData()));
+	connect(ui.btnOpenDir, SIGNAL(clicked()), this, SLOT(openExeDir()));
 	connect(this, SIGNAL(handleLog(const QString&)), this, SLOT(onHandleLog(const QString&)), Qt::ConnectionType::QueuedConnection);
 	connect(this, SIGNAL(endhandle(bool)), this, SLOT(onEndHandle(bool)));
 
@@ -88,6 +96,35 @@ void Tool_BinMerge::onEndHandle(bool status)
 	mpThread.release();
 }
 
+#include <QDebug>
+
+
+#define MB(S)     ((S) * 1048576)
+#define SPLITMB   MB(63)  //23个gprmc 大概63mb
+void Tool_BinMerge::openExeDir()
+{
+	//QString commd = QStringLiteral("explorer /select,%1/%2").arg(qApp->applicationDirPath()).arg(imufile.c_str());
+	//commd.replace("/", "\\");
+	//QProcess::startDetached(commd);
+
+	QString file = QFileDialog::getOpenFileName(nullptr, "Info", QString("E:\\Datas\\errdata"), "Pcap(*.pcap)");
+
+	if (!file.isEmpty())
+	{
+		QFileInfo fileinfo(file);
+
+		if (fileinfo.size() > SPLITMB)
+		{
+			qDebug() << "Start Spliting !!!" << endl;
+
+			if (FileProcesser::Pcap_Split(file.toStdString()))
+			{
+				qDebug() << "Split Successfully !!! " << endl;
+			}
+
+		}
+	}
+}
 
 void Tool_BinMerge::switchUiStatus(bool status)
 {
@@ -203,6 +240,66 @@ void Tool_BinMerge::chooseTransFile()
 #include "LVXDataParse.h"
 #include <QTime>
 #include <QDebug>
+
+
+class ImuRWNode final
+{
+public:
+	struct ImuData
+	{
+		double time = -1.0f;
+		double roll;
+		double pitch;
+		double yaw;
+
+		double accx;
+		double accy;
+		double accz;
+
+		double gyrox;
+		double gyroy;
+		double gyroz;
+
+		double lon;
+		double lat;
+	};
+	ImuRWNode(const ImuRWNode&) = delete;
+
+	/// <summary>
+	/// 构造函数
+	/// </summary>
+	/// <param name="path">文件路径</param>
+	/// <param name="isread">文件处理模式</param>
+	ImuRWNode(const std::string& path,bool isread = true)
+	{
+		mFile.open(path, isread ? std::ios::in : std::ios::out);
+
+		if (!mFile.is_open())
+			throw std::exception("Imu File Open Failed!");
+	}
+
+	ImuData readOne()
+	{
+		ImuData item;
+		if (!mFile.eof())
+		{
+			std::string line;
+			std::getline(mFile, line);
+			if (!line.empty())
+			{
+				sscanf(line.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &item.time,
+					&item.roll, &item.pitch, &item.yaw,
+					&item.accx, &item.accy, &item.accz,
+					&item.gyrox, &item.gyroy, &item.gyroz,
+					&item.lon, &item.lat);
+			}
+		}
+		return item;
+	}
+protected:
+	std::fstream mFile;
+};
+
 void Tool_BinMerge::getLvxData()
 {
 	QString file = QFileDialog::getOpenFileName(nullptr, "", QString("E:/Datas"), "Date(*.dat)");
@@ -211,13 +308,23 @@ void Tool_BinMerge::getLvxData()
 
 		std::ofstream  imu_raw(qApp->applicationDirPath().toStdString() + "/imutrace.txt");
 		
-		ReadLVXRawData(file.toStdString(), [&imu_raw, this](const LvxDataSegment& data) {
+		std::ofstream sensor_imu(qApp->applicationDirPath().toStdString() + "/" + imufile);
+
+		ReadLVXRawData(file.toStdString(), [&imu_raw,&sensor_imu, this](const LvxDataSegment& data) {
 			auto imudata = std::move(data.gsofdata);
-			//qDebug() << "record imu data : " << endl;
-			//qDebug() << fmod(imudata.gpstime / 1000.0, 86400) << " " << imudata.gyro_x << " " << imudata.gyro_y << " " << imudata.acc_x << endl;
-			//qDebug() << imudata.lon << " " << imudata.lat << endl;
-			std::string  line = std::to_string(imudata.lat) + "," + std::to_string(imudata.lon) + "," + std::to_string(fmod(imudata.gpstime / 1000.0, 86400)) + "\n";
+
+			double time = CommUtils::Functions::WkTime2DayTime(imudata.gpstime / 1000.0);
+
+			std::string  line = std::to_string(imudata.lat) + "," + std::to_string(imudata.lon) + "," + std::to_string(time) + "\n";
 			imu_raw.write(line.c_str(), line.size());
+
+			std::string value = CommUtils::Functions::WriteLine<20,10>(time,
+				imudata.roll	,imudata.pitch	,imudata.heading,
+				imudata.acc_x	,imudata.acc_y	,imudata.acc_z,
+				imudata.gyro_x	,imudata.gyro_y	,imudata.gyro_z,
+				imudata.lon,imudata.lat,imudata.alt);
+
+			sensor_imu.write(value.c_str(), value.size());
 			emit handleLog(line.c_str());
 			});
 		emit endhandle(true);

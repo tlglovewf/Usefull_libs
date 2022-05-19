@@ -132,6 +132,7 @@ typedef struct tag_Pcapfile {
 	int64_t _size = 0;
 	int32_t _pkgmissedmax = 0;	//单次丢帧最大数量
 	int64_t _packetmissed = 0;	//共丢多少帧
+	int32_t _gpscnt = 0;		//GPRMC数量
 	std::vector<PosItem> _pos;
 	std::string _path = "";
 	tag_Pcapfile() {
