@@ -11,8 +11,16 @@ public:
     Tool_Curl(QWidget *parent = Q_NULLPTR);
 
     bool isStop()const { return mbStop; }
+	void setLocFileSize(long long sz)
+	{
+		mlocfilesz = sz;
+	}
+	long long locFileSize()const
+	{
+		return mlocfilesz;
+	}
 signals:
-    void finished();
+    void finished(int);
     void valueChanged(int);
 protected slots :
 
@@ -20,11 +28,17 @@ protected slots :
 
     void stopClicked();
 
-    void onFinished();
+    void onFinished(int result);
 
     void onProgressValue(int value);
+
+
+
+
 private:
     Ui::Tool_CurlClass ui;
 
     bool              mbStop = false;
+
+    long long         mlocfilesz = 0;
 };

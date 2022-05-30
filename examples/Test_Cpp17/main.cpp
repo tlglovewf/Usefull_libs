@@ -200,7 +200,7 @@ namespace fs = std::filesystem;
 
 void test_filesystem()
 {
-	fs::path filepath("E:/CamCalibra/data/Ref/MATLAB_Calculate/Result/10.jpg");
+	fs::path filepath("E:/CamCalibra/data/Ref/MATLAB_Calculate/Result/1.jpg");
 
 	if (fs::exists(filepath))
 	{
@@ -286,7 +286,7 @@ int main(int argc, char** argv)
 	//
 	//test_make_from_tuple();
 
-	//test_filesystem();
+	test_filesystem();
 
 	//if (fs::remove("E:/tools/test.txt"))
 	//{
@@ -297,8 +297,8 @@ int main(int argc, char** argv)
 	//
 	//std::cout << value << std::endl;
 
-	auto str = format("%s%d", "ÄãºÃ", 100);
+	//auto str = format("%s%d", "ÄãºÃ", 100);
 
-	std::cout << str.c_str() << std::endl;
+	//std::cout << str.c_str() << std::endl;
 	return 0;
 }

@@ -25,7 +25,7 @@
         <item>
          <widget class="QLineEdit" name="leUrl">
           <property name="text">
-           <string>https://curl.se/windows/dl-7.83.1_1/curl-7.83.1_1-win64-mingw.zip</string>
+             <string>https://curl.se/windows/dl-7.83.1_1/curl-7.83.1_1-win64-mingw.zip</string>
           </property>
          </widget>
         </item>
