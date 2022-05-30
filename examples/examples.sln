@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Fmt", "Test_Fmt\Test_F
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool_TimeTrans", "Tool_TimeTrans\Tool_TimeTrans.vcxproj", "{BBE08C58-0B43-495D-88E9-274992C2AF14}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool_Curl", "Tool_Curl\Tool_Curl.vcxproj", "{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -288,6 +290,12 @@ Global
 		{BBE08C58-0B43-495D-88E9-274992C2AF14}.Release|x64.Build.0 = Release|x64
 		{BBE08C58-0B43-495D-88E9-274992C2AF14}.Release|x86.ActiveCfg = Release|Win32
 		{BBE08C58-0B43-495D-88E9-274992C2AF14}.Release|x86.Build.0 = Release|Win32
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Debug|x64.ActiveCfg = Debug|x64
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Debug|x64.Build.0 = Debug|x64
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Debug|x86.ActiveCfg = Debug|x64
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Release|x64.ActiveCfg = Release|x64
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Release|x64.Build.0 = Release|x64
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,6 +327,7 @@ Global
 		{214876AE-FB60-324B-8A2F-FDA687C65E27} = {74871C3A-56A0-4A5B-9D80-74B9FDF7D589}
 		{40F98766-CE7D-41E5-ACD9-86EFCB7D41DC} = {474A75F1-72F2-4F8D-AEE8-1471C3CB8774}
 		{BBE08C58-0B43-495D-88E9-274992C2AF14} = {74871C3A-56A0-4A5B-9D80-74B9FDF7D589}
+		{F2C9B9C7-DF36-44B7-B625-0BC5484EE605} = {74871C3A-56A0-4A5B-9D80-74B9FDF7D589}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72C35D38-A460-4F38-889B-0652DFA0B0C7}

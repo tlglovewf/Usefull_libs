@@ -13,3 +13,4 @@ debug
 examples/Test_Eigen/test.bin
 libopencv/bin/opencv_world455.dll
 libopencv/bin/opencv_world455d.dll
+examples/Test_Json/out.json

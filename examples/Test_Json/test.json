@@ -1,17 +1,25 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+{
+    "sampleRate": 1,
+    "coordinate": 0,
+    "coordinateEpoch": 2005,
+    "satSys": 61,
+    "frequencyUsed": [
+        7,
+        3,
+        7,
+        7,
+        7
+    ],
+    "ephGet": 0,
+    "callbackUrl": "http://localhost:1988",
+    "dataType": 0,
+    "dataFormat": 0,
+    "virtualPoints": [
+        {
+            "id": 1,
+            "x":-248719,"y":4641364,"z":4353022,
+            "startTime": 1649753968,
+            "endTime": 1649755768
+        }
+    ]
+}

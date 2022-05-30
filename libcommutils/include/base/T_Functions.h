@@ -107,6 +107,28 @@ namespace CommUtils
 			return output;
 		}
 #endif
+
+		/// <summary>
+		/// 将vector插入到另一个vector中
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="rt"></param>
+		/// <param name="ins"></param>
+		/// <param name="index"></param>
+		template<typename T>
+		static void VecInsert(std::vector<T>& rt, const std::vector<T>& ins, int index)
+		{
+			index = std::min(std::max(index, 0), (int)rt.size());
+			size_t orilen = rt.size();
+			rt.resize(orilen + ins.size());
+			if (index != orilen)
+			{
+				std::vector<T> temp(&rt[index], &rt[orilen]);
+
+				memcpy(&rt[index + ins.size()], &temp[0], sizeof(T) * temp.size());
+			}
+			memcpy(&rt[index], &ins[0], sizeof(T) * ins.size());
+		}
 	};
 
 	

@@ -241,65 +241,6 @@ void Tool_BinMerge::chooseTransFile()
 #include <QTime>
 #include <QDebug>
 
-
-class ImuRWNode final
-{
-public:
-	struct ImuData
-	{
-		double time = -1.0f;
-		double roll;
-		double pitch;
-		double yaw;
-
-		double accx;
-		double accy;
-		double accz;
-
-		double gyrox;
-		double gyroy;
-		double gyroz;
-
-		double lon;
-		double lat;
-	};
-	ImuRWNode(const ImuRWNode&) = delete;
-
-	/// <summary>
-	/// 构造函数
-	/// </summary>
-	/// <param name="path">文件路径</param>
-	/// <param name="isread">文件处理模式</param>
-	ImuRWNode(const std::string& path,bool isread = true)
-	{
-		mFile.open(path, isread ? std::ios::in : std::ios::out);
-
-		if (!mFile.is_open())
-			throw std::exception("Imu File Open Failed!");
-	}
-
-	ImuData readOne()
-	{
-		ImuData item;
-		if (!mFile.eof())
-		{
-			std::string line;
-			std::getline(mFile, line);
-			if (!line.empty())
-			{
-				sscanf(line.c_str(), "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &item.time,
-					&item.roll, &item.pitch, &item.yaw,
-					&item.accx, &item.accy, &item.accz,
-					&item.gyrox, &item.gyroy, &item.gyroz,
-					&item.lon, &item.lat);
-			}
-		}
-		return item;
-	}
-protected:
-	std::fstream mFile;
-};
-
 void Tool_BinMerge::getLvxData()
 {
 	QString file = QFileDialog::getOpenFileName(nullptr, "", QString("E:/Datas"), "Date(*.dat)");
