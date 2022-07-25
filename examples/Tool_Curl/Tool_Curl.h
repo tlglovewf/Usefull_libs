@@ -21,7 +21,7 @@ public:
 	}
 signals:
     void finished(int);
-    void valueChanged(int);
+    void valueChanged(int, const QString&);
 protected slots :
 
     void startClicked();
@@ -30,7 +30,7 @@ protected slots :
 
     void onFinished(int result);
 
-    void onProgressValue(int value);
+    void onProgressValue(int value, const QString& speed);
 
 
 

@@ -1,10 +1,18 @@
 #include "Tool_Curl.h"
 #include "curl/curl.h"
+
+#include "T_TimeInteral.h"
 #include <QMessageBox>
 
 #include <filesystem>
 
+#include <iostream>
+
+#include <chrono>
 Tool_Curl* s_single = nullptr;
+
+CommUtils::TimeInteral timecnt;
+
 Tool_Curl::Tool_Curl(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -15,7 +23,7 @@ Tool_Curl::Tool_Curl(QWidget *parent)
     connect(ui.btnStart , SIGNAL(clicked()), this, SLOT(startClicked()));
     connect(ui.btnStop  , SIGNAL(clicked()), this, SLOT(stopClicked()));
     connect(this        , SIGNAL(finished(int)),this, SLOT(onFinished(int)));
-	connect(this, SIGNAL(valueChanged(int)), this, SLOT(onProgressValue(int)));
+	connect(this, SIGNAL(valueChanged(int, const QString&)), this, SLOT(onProgressValue(int, const QString&)));
 
 	ui.pgbProgress->setRange(0, 100);
 	ui.pgbProgress->setValue(0);
@@ -33,10 +41,13 @@ void Tool_Curl::onFinished(int result)
 	}
 }
 
-void Tool_Curl::onProgressValue(int value)
+void Tool_Curl::onProgressValue(int value,const QString& speed)
 {
 	ui.pgbProgress->setValue(value);
+	ui.lblspeed->setText(speed);
 }
+
+static double lastdownloaded = 0.0;
 
 #include <thread>
 class FileDownload
@@ -57,6 +68,7 @@ public:
 		//指定低于速率 1kb/s 60s 断开链接
 		curl_easy_setopt(mpHandle, CURLOPT_LOW_SPEED_LIMIT, 1);
 		curl_easy_setopt(mpHandle, CURLOPT_LOW_SPEED_TIME, 60);
+		//curl_easy_setopt(mpHandle, CURLOPT_CUSTOMREQUEST, "GET");
 		//curl_easy_setopt(mpHandle, CURLOPT_TIMEOUT, 2);  //超时时间
 
 		//curl_easy_setopt(mpHandle, CURLOPT_POST, false);
@@ -87,7 +99,37 @@ public:
 		return len;
 	}
 
+	static bool startsWith(const std::string& lhs, const std::string& rhs)
+	{
+		if (lhs.size() < rhs.size())
+			return false;
+		else
+			return  lhs.substr(0, rhs.size()) == rhs;
+	}
 
+	//header 一行字符串
+	static size_t readHeader(char* header, size_t size, size_t nitems, void* userdata) 
+	{
+		std::string headstr(header);
+		std::string valuestr = headstr.substr(headstr.find_last_of(':') + 1);
+		if (startsWith(headstr, "Content-Length:") || startsWith(headstr,"content-length"))
+		{
+			double* data = static_cast<double*>(userdata);
+
+			*data = atoll(valuestr.c_str());
+		}
+		else if (startsWith(header, "Content-disposition:")) 
+		{
+			// do something 
+			std::cout << valuestr << std::endl;
+		}
+		else
+		{
+			;// do something
+		}
+			
+		return size * nitems;
+	}
 
     LONGLONG getFileSize(const char* url)
     {
@@ -95,38 +137,86 @@ public:
 		for (int iTry = 0; iTry < 3; iTry++)//由于curl_easy_perform可能会有偶发性的CURLE_WRITE_ERROR错误，所以添加重试机制
 		{
 			curl_easy_setopt(mpHandle, CURLOPT_URL, url);
-			curl_easy_setopt(mpHandle, CURLOPT_HEADER, 1); //获取头信息
+			curl_easy_setopt(mpHandle, CURLOPT_HEADER, 0); //获取头信息
 			curl_easy_setopt(mpHandle, CURLOPT_FOLLOWLOCATION, 1);
 			curl_easy_setopt(mpHandle, CURLOPT_NOBODY, 1);
+			
+			curl_easy_setopt(mpHandle, CURLOPT_HEADERDATA, &lensize);
+			curl_easy_setopt(mpHandle, CURLOPT_HEADERFUNCTION, readHeader);
 			CURLcode res = curl_easy_perform(mpHandle);
 			
+			curl_easy_setopt(mpHandle, CURLOPT_HEADER, 0); //获取头信息
+			curl_easy_setopt(mpHandle, CURLOPT_FOLLOWLOCATION, 0);
+			curl_easy_setopt(mpHandle, CURLOPT_NOBODY, 0);
+
 			if (res == CURLE_OK) {
-				CURLcode resGetInfo = curl_easy_getinfo(mpHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &lensize);
-				if (CURLE_OK == resGetInfo) {
-					curl_easy_setopt(mpHandle, CURLOPT_HEADER, 0); //获取头信息
-					curl_easy_setopt(mpHandle, CURLOPT_FOLLOWLOCATION, 0);
-					curl_easy_setopt(mpHandle, CURLOPT_NOBODY, 0);
-					return (LONGLONG)lensize;
-				}
+				//CURLcode resGetInfo = curl_easy_getinfo(mpHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &lensize);
+				return lensize;
 			}
 		}
-		curl_easy_setopt(mpHandle, CURLOPT_HEADER, 0);
-		curl_easy_setopt(mpHandle, CURLOPT_FOLLOWLOCATION, 0);
-		curl_easy_setopt(mpHandle, CURLOPT_NOBODY, 0);
 		return -1;
     }
+
+	
+
 	//curl_easy_setopt(m_pCurl, CURLOPT_POST, true); 
 	//下载时不能指定为post方式，否则下载时进度函数dltotal, dlnow都为0，导致下载进度函数执行可能失败！！！
 	static int processfunc(void* ptr, double totalToDownload, double nowDownloaded, double totalToUpLoad, double nowUpLoaded)
 	{
 		Tool_Curl* filedownload = static_cast<Tool_Curl*>(ptr);
+		static float costtime = 0.0;
+		if (nowDownloaded == 0)
+		{
+			timecnt.start();
+		}
+
 		if (filedownload == nullptr)
 			return 0;
+
+		static QString speedstr;
+		if (nowDownloaded > lastdownloaded)
+		{
+			costtime += timecnt.count(true);
+			if (costtime > 1.0)
+			{
+				double rate = (nowDownloaded - lastdownloaded) ;
+				rate /= costtime;
+				std::string unit;
+				if (rate < 1024)
+				{
+					unit = "b/s";
+				}
+				else if (rate < 1024 * 1024)
+				{
+					rate /= 1024;
+					unit = "kb/s";
+				}
+				else if (rate < 1024 * 1024 * 1024)
+				{
+					rate /= (1024 * 1024);
+					unit = "mb/s";
+				}
+				else
+				{
+					rate /= (1024 * 1024 * 1024);
+					unit = "gb/s";
+				}
+
+				lastdownloaded = nowDownloaded;
+
+				speedstr = QStringLiteral("%1%2").arg(rate).arg(unit.c_str());
+				costtime = 0.0;
+
+			}
+		}
+
+		
+
 		if (!filedownload->isStop())
 		{
 			// set progress value
 			if(totalToDownload != 0)
-			emit filedownload->valueChanged(((nowDownloaded + filedownload->locFileSize())/ (filedownload->locFileSize() + totalToDownload)) * 100.0);
+			emit filedownload->valueChanged(((nowDownloaded + filedownload->locFileSize())/ (filedownload->locFileSize() + totalToDownload)) * 100.0, speedstr);
 
 			return 0;//all is good
 		}
@@ -140,6 +230,7 @@ public:
 
     void downloadFile(const char* url, std::function<void(int)> callback)
     {
+		lastdownloaded = 0;
         std::string strurl(url);
 		s_single->setLocFileSize(0);
 		mbackend = std::thread([=]() {
@@ -149,6 +240,8 @@ public:
 			FILE* file = nullptr;
 
 			std::string range;
+			auto netsize = getFileSize(strurl.c_str());
+
 			if (!std::filesystem::exists(filename))
 			{
 				file = fopen(filename.c_str(), "wb");
@@ -156,7 +249,7 @@ public:
 			else
 			{
 				auto localsize = std::filesystem::file_size(filename);
-				auto netsize   = getFileSize(strurl.c_str());
+				
 				if (netsize < 0)
 				{
 					callback(CURLE_OPERATION_TIMEOUTED);
@@ -204,7 +297,12 @@ public:
 			if (callback)
 			{
 				long http_code = 0;
-				//result = curl_easy_getinfo(mpHandle, CURLINFO_RESPONSE_CODE, &http_code);
+				result = curl_easy_getinfo(mpHandle, CURLINFO_RESPONSE_CODE, &http_code);
+				if (netsize < 1024)
+				{
+					//std::ifstream infile(filename);
+					//add error judge
+				}
 				callback(result);
 			}
 				
