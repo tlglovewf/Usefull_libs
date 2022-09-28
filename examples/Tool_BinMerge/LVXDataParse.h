@@ -71,21 +71,6 @@ T SwitchByteStorage(T t)
 	return result;
 }
 
-quint32 s_convertToUint32(const unsigned char* ptr)
-{
-	quint32 temp = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
-	return temp;
-}
-
-float s_convertToFloat(const unsigned char* ptr)
-{
-	quint32 temp = s_convertToUint32(ptr);
-	float ret;
-	memcpy(&ret, &temp, sizeof(float));
-
-	return ret;
-}
-
 /// <summary>
 ///  ¶ÁÈ¡lvx datÎÄ¼ş
 /// </summary>
